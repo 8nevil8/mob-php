@@ -1,0 +1,38 @@
+/*
+    Stylesheet for menu block
+*/
+
+div#menu {
+    width: 100%;
+    font-size: 19px;
+}
+
+#menu ul {
+    list-style-type: none;
+    margin: 0 auto;
+    padding: 0;
+}
+
+#menu li {
+    float: left;
+    text-align: center;
+    padding-right: 15px;
+}
+#menu ul a {
+    display: block;
+    text-decoration: none;
+    font-family: Tahoma;
+}
+
+#menu ul a:visited, #menu ul a:link, #menu ul a:active {
+    color: inherit;
+}
+
+ul a:hover, #menu ul a.sel {
+    color: #F07BC6 !important;
+}
+
+#menu ul a.sel{
+    font-weight: bold;
+    letter-spacing: 0px;
+}
