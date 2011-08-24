@@ -4,3 +4,5 @@ nbproject/
 _data/cache/
 _data/log/*.log
 **/*.orig
+
+*/*/managed/*

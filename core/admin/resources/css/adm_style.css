@@ -1,0 +1,148 @@
+#center {
+    width: 100%;
+    margin:0px auto;
+}
+
+#head, #footer{
+    height:60px;
+    border-bottom:2px solid #6C1A26;
+    border-top: 2px solid #6C1A26;
+    background-image: url(../img/bg_support.jpg);
+    position:relative;
+    overflow:hidden;
+}
+#content_container #menu{
+    float:left
+}
+
+#content_container .main_content{
+    padding-left: 10px;
+    float:left;
+    width: 85%;
+}
+
+.main_content {
+    padding-top: 10px !important;
+}
+
+div.preview > img {
+    border: 1px solid #000000;
+}
+
+div.img_editor {
+    padding-bottom: 10px;
+    padding-right: 10px;
+    float: left;
+    text-align: center;
+}
+
+.button {
+    background-image: url(/core/resources/img/button_bg.gif) !important;
+    color: #FFFFFF !important;
+}
+
+.img_editor .buttons, .edit_item .buttons, .edit_contacts .buttons{
+    width: 240px;
+}
+.img_editor .buttons {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.buttons a {
+    background: url("../img/bg_support.jpg") repeat scroll 0 0 transparent;
+    border: 2px solid #6C1A26;
+}
+
+.buttons a, a.back {
+    color: #FFFFFF;
+    display: block;
+    float: left;
+    font-size: 10px;
+    height: 16px;
+    line-height: 16px;
+    margin-right: 4px;
+    overflow: hidden;
+    padding: 0 5px;
+    text-decoration: none !important;
+    width: auto;
+}
+
+.buttons {
+    width: 100% !important;
+}
+
+
+.img_editor .buttons a:first-child {
+    float: left;
+}
+
+.img_editor .buttons a:last-child {
+    float: right;
+}
+
+.buttons a { 
+    display: inline;
+    float: none !important;
+    padding: 0 25px;
+    /*    width: 100%;*/
+}
+
+.form .buttons {
+    padding-top: 10px;
+    text-align: center;
+}
+
+.img_editor div#newimg a {
+    float: inherit;
+}
+
+#newimg_container {
+    width: 340px;
+    text-align: left;
+}
+
+#newimg_container .buttons {
+    margin-left: 0px;
+}
+
+.item_label {
+    font-size: 16px;
+}
+
+.select {
+    background-color: #1A1016;
+}
+
+.form_container input, .form_container textarea {
+    width: 60%;
+}
+
+input {
+    color:#838182;
+}
+
+label {
+    border: 0 none;
+    display: block;
+    float: left;
+    font-size: 12px;
+/*    height: 11px;*/
+/*    line-height: 14px;*/
+    margin: 0 0 4px;
+    padding: 3px 5px 0 0;
+    text-align: right;
+    width: 20%;
+}
+
+.textarea, .input {
+    display: inline;
+    float: none;
+    height: auto !important;
+    width: 70%;
+}
+
+span, strong {
+    font-weight: bolder;
+    font-size: 16px;
+}

@@ -4,8 +4,8 @@ function __autoload($class_name) {
     $class_folder = 'classes';
     //Lookup in same directory
     $class_paths[] = dirname(__FILE__) . '/';
-    $class_paths[] = $_SERVER['DOCUMENT_ROOT'] . "/app/$class_folder/";
-    $class_paths[] = $_SERVER['DOCUMENT_ROOT'] . "/admin/app/$class_folder/";
+    $class_paths[] = $_SERVER['DOCUMENT_ROOT'] . "/core/$class_folder/";
+    $class_paths[] = $_SERVER['DOCUMENT_ROOT'] . "/core/admin/$class_folder/";
     $class_paths[] = dirname($_SERVER['SCRIPT_FILENAME']) . "/$class_folder/";
     $class_paths[] = dirname(__FILE__) . "/$class_folder/";
     //$CLASS_PATHS

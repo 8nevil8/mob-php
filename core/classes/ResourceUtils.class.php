@@ -8,6 +8,7 @@ class ResourceUtils {
     private static $instance;
 
     private function __construct() {
+        
     }
 
     /**
@@ -30,7 +31,9 @@ class ResourceUtils {
      * @return img
      */
     public function getResizableImg($imgSrc, $width=0, $height=0, $title='') {
-        return '<img src="/resize_image.php?src=' . $imgSrc . '&w=' . $width . '&h=' . $height . '" title="' . $title . '"/>';
+        return '<img src="/resize_image.php?src=' . $imgSrc .
+            ($width > 0 ? '&w=' . $width : '') .
+            ($height > 0 ? '&h=' . $height : '') . '" title="' . $title . '"/>';
     }
 
     /**

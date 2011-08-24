@@ -1,7 +1,7 @@
 <?
 define('CACHE_SIZE', 1000);    // number of files to store before clearing cache
 define('CACHE_CLEAR', 20);     // maximum number of files to delete on each cache clear
-define('CACHE_USE', TRUE);     // use the cache files? (mostly for testing)
+define('CACHE_USE', true);     // use the cache files? (mostly for testing)
 define('VERSION', '1.25');     // version number (to force a cache refresh)
 define('DIRECTORY_CACHE', $_SERVER['DOCUMENT_ROOT'] . '/_data/cache');  // cache directory
 define('MAX_WIDTH', 1500);     // maximum image width
@@ -471,14 +471,15 @@ function check_cache($mime_type) {
 function show_cache_file($mime_type) {
 
     // use browser cache if available to speed up page load
+    $cache_file = get_cache_file($mime_type);
+
     if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
-        if (strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) < strtotime('now')) {
+        if (strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) == filemtime($cache_file)) {
             header('HTTP/1.1 304 Not Modified');
             die ();
         }
     }
 
-    $cache_file = get_cache_file($mime_type);
 
     if (file_exists($cache_file)) {
 
