@@ -12,11 +12,13 @@ abstract class Controller {
     private $childConrollers = array();
     private $name;
     private $current_action;
+
     /**
      * Instance of Messages class.
      * @var Messages 
      */
     protected $messages;
+
     /**
      * Instance of Image Settings for Controller. Could be configured for each controller.
      * @var ImageSettings 
@@ -24,6 +26,7 @@ abstract class Controller {
     protected $imageSettings;
     protected $default_action = "index";
     protected $output;
+    protected $errorStatus = array();
 
     public function __construct($name = false) {
         if (!$name) {
@@ -35,11 +38,27 @@ abstract class Controller {
     }
 
     /**
+     * Returns image settings instance
+     * @return ImageSettings 
+     */
+    public function getImageSettings() {
+        return $this->imageSettings;
+    }
+
+    /**
+     * Returns instance of Messages class
+     * @return Messages 
+     */
+    public function getMessages() {
+        return $this->messages;
+    }
+
+    /**
      * Adds child controller to associative array. If $key is not defined, $controller->getName() will be used as key.
      * @param Controller $controller
      * @param string $key 
      */
-    public function addChildController($controller, $key=false) {
+    public function addChildController($controller, $key = false) {
         if ($controller instanceof Controller) {
             $key = !$key ? $controller->getName() : $key;
             $this->childConrollers[$key] = $controller;
@@ -91,7 +110,7 @@ abstract class Controller {
     }
 
     private static function __get_from_array($array, $key_name, $default_value = false) {
-        if (!isset($array[$key_name])) return $default_value;
+        if (!isset($array[$key_name]) || $array[$key_name] == "") return $default_value;
         return $array[$key_name];
     }
 
@@ -198,7 +217,7 @@ abstract class Controller {
     public function actionUri($action) {
         $params = func_get_args();
         return call_user_func_array(
-            array($this->uri(), "set"), $params
+                array($this->uri(), "set"), $params
         );
     }
 
@@ -215,6 +234,22 @@ abstract class Controller {
     }
 
     /**
+     * Returns page title, which could be set by active controller.
+     * @return string 
+     */
+    public function getPageTitle() {
+        return '';
+    }
+
+    /**
+     * Returns meta keys, which could be set by active controller.
+     * @return string 
+     */
+    public function getMetaKeywords() {
+        return '';
+    }
+
+    /**
      * Returns full path for getDir() method.
      * @return dir
      */
@@ -225,7 +260,7 @@ abstract class Controller {
     /**
      * Returns relative based dir, where controller is located. Subclasses should override this method.
      */
-    protected abstract function getDir();
+    public abstract function getDir();
 
     /**
      * Loads css files from controller directory.
@@ -273,13 +308,17 @@ abstract class Controller {
         return $this->fetchJs($result);
     }
 
+    public function getFetchedJS() {
+        return $this->fetchJs($this->getJS());
+    }
+
     /**
      * Function returns fetched css from given directory.
      * @param file $cssDir
      * @return string 
      */
-    protected function getFetchedCss($cssDir, $cssWebDir='') {
-        return $this->fetchCss($this->lookUpResources($cssDir), $cssWebDir);
+    public function getFetchedCss() {
+        return $this->fetchCss($this->getCss());
     }
 
     /**
@@ -287,12 +326,14 @@ abstract class Controller {
      * @param file $cssDir
      * @return string 
      */
-    protected function fetchCss($cssArray, $cssWebDir='') {
+    protected function fetchCss($cssArray, $cssWebDir = '') {
         $result = '';
         if (is_array($cssArray)) {
             foreach ($cssArray as $cssDir => $cssFiles) {
                 foreach ($cssFiles as $css) {
-                    $result.= '<link href="' . $cssDir . Config::$CSS_DIR_PREFIX . $css . '" rel="stylesheet" type="text/css"/>';
+                    $resultCss = $cssDir . Config::$CSS_DIR_PREFIX . $css;
+                    $cssFileVersion = filemtime($_SERVER['DOCUMENT_ROOT'] . $resultCss);
+                    $result.= '<link href="' . $resultCss . '?v=' . $cssFileVersion . '" rel="stylesheet" type="text/css"/>';
                 }
             }
         }
@@ -304,12 +345,14 @@ abstract class Controller {
      * @param file $jsArray
      * @return string 
      */
-    protected function fetchJS($jsArray, $webDir='') {
+    protected function fetchJS($jsArray, $webDir = '') {
         $result = '';
         if (is_array($jsArray)) {
             foreach ($jsArray as $jsDir => $jsFiles) {
                 foreach ($jsFiles as $js) {
-                    $result.= '<script src="' . $jsDir . Config::$JS_DIR_PREFIX . $js . '" type="text/javascript"></script>';
+                    $resultJs = $jsDir . Config::$JS_DIR_PREFIX . $js;
+                    $jsFileVersion = filemtime($_SERVER['DOCUMENT_ROOT'] . $resultJs);
+                    $result.= '<script src="' . $resultJs . '?v=' . $jsFileVersion . '" type="text/javascript"></script>';
                 }
             }
         }
@@ -318,7 +361,9 @@ abstract class Controller {
 
     protected function lookUpResources($sourceDir) {
         if (is_dir($sourceDir) && file_exists($sourceDir)) {
-            return FileUtils::readDir($sourceDir, false);
+            $result = FileUtils::readDir($sourceDir, false);
+            sort($result);
+            return $result;
         } else {
             return array();
         }

@@ -25,8 +25,8 @@ class DB {
      * @param <type> $configFile name of config file. conn.ini - by default.
      * @exception Exception failed to parse ini or connect to db.
      */
-    function DB($configFile='conn.ini') {
-        $config = parse_ini_file($_SERVER['DOCUMENT_ROOT'] . Config::$APP_DIR . Config::$CONFIG_DIR_PREFIX . $configFile);
+    function DB($configFile = 'conn.ini') {
+        $config = parse_ini_file($_SERVER['DOCUMENT_ROOT'] . Config::$CORE_DIR . Config::$CONFIG_DIR_PREFIX . $configFile);
         if (!$config) {
             throw new Exception(self::$exceptions['parse_ini_error']);
         }
@@ -35,7 +35,7 @@ class DB {
         $this->password = $config['password'];
         $this->dbName = $config['dbname'];
         $this->connect();
-        mysql_query('SET NAMES utf8');
+        mysql_query('SET NAMES ' . $config['encoding']);
     }
 
     /**
@@ -59,12 +59,13 @@ class DB {
     /**
      * Execute query.
      *
-     * @param  string   $query query.
+     * @param string $query query.
+     * @param boolean $allowNull - true to convert null values to 'null'. Default to false.
      * @return resource response.
      * @exception Exception query error.
      */
-    public function query($query, $params = null) {
-        $res = $this->executeQuery($query, $params);
+    public function query($query, $params = null, $allowNull = false) {
+        $res = $this->executeQuery($query, $params, $allowNull);
         if (mysql_errno()) {
             throw new Exception('Error "' . (htmlSpecialChars($query)) . '":' . htmlSpecialChars(mysql_error()));
         }
@@ -74,12 +75,13 @@ class DB {
     /**
      * Execute query.
      *
-     * @param  string   $query query.
+     * @param string  $query query.
+     * @param boolean $allowNull - true to convert null values to 'null'. Default to false.
      * @return array.
      * @exception Exception query error.
      */
-    public function queryForList($query, $params = null) {
-        $res = $this->executeQuery($query, $params);
+    public function queryForList($query, $params = null, $allowNull = false) {
+        $res = $this->executeQuery($query, $params, $allowNull);
         if (mysql_errno()) {
             throw new Exception('Error "' . (htmlSpecialChars($query)) . '":' . htmlSpecialChars(mysql_error()));
         }
@@ -94,11 +96,12 @@ class DB {
      * Executes query.
      * @param string $query
      * @param array $params
+     * @param boolean $allowNull - true to convert null values to 'null'. Default to false.
      * @return result
      */
-    private function executeQuery($query, $params = null) {
+    private function executeQuery($query, $params = null, $allowNull = false) {
         Debug::printMessage($query);
-        $query = $this->prepare_query($query, $params);
+        $query = $this->prepare_query($query, $params, $allowNull);
         return mysql_query($query);
     }
 
@@ -148,12 +151,16 @@ class DB {
      * Prepare query for execution. Replace :param: with appropriate value.
      * @param string $query
      * @param array $params
+     * @param boolean $allowNull - true to convert null values to ''. Default to false.
      * @return string
      */
-    public function prepare_query($query, $params = null) {
+    public function prepare_query($query, $params = null, $allowNull = false) {
         if (null != $params) {
             $resultCount = 0;
             foreach ($params as $key => $value) {
+                if ($allowNull && null == $value) {
+                    $value = 'null';
+                }
                 $query = str_replace(':' . $key . ':', $value, $query, $resultCount);
             }
         }

@@ -19,7 +19,7 @@ class CommonService {
     public function __construct() {
         $this->dbUtils = new DB();
         $this->fileUtils = FileUtils::getInstance();
-        $this->lang = Messages::$DEFAULT_LANG;
+        $this->lang = Messages::getInstance()->getLang();
     }
 
     /**

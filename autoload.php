@@ -26,6 +26,12 @@ function __autoload($class_name) {
             return;
         }
 
+        // When class has same name as dir: /A/A.class.php
+        $file_full_name = "{$class_path}{$class_name}/{$class_folder}/{$class_name}";
+        if (lookupClass($file_full_name)) {
+            return;
+        }
+
         $file_full_name = "{$class_path}{$slashed_class_name}";
         if (lookupClass($file_full_name)) {
             return;

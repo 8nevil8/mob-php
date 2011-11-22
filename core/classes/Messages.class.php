@@ -5,9 +5,8 @@
  * @author nevil
  */
 class Messages {
-    public static $EnglishLang = '1';
-    public static $RussianLang = '2';
-    public static $Langs = array();
+    public static $EnglishLang = 'en';
+    public static $RussianLang = 'ru';
     public static $DEFAULT_LANG;
     protected $messages = array();
     private $currentLang;
@@ -17,7 +16,7 @@ class Messages {
      * @param $context - directory with messages. null - application core dir;
      * @return Messages 
      */
-    public static function getInstance($context=null) {
+    public static function getInstance($context = null) {
         return new Messages($context);
     }
 
@@ -39,13 +38,8 @@ class Messages {
         }
     }
 
-    private function __construct($context=null) {
-        self::$DEFAULT_LANG = self::$EnglishLang;
-        self::$Langs = array(
-            self::$RussianLang => 'ru',
-            self::$EnglishLang => 'en',
-        );
-        $this->currentLang = self::$Langs[self::$DEFAULT_LANG];
+    private function __construct($context = null) {
+        $this->currentLang = isset($_GET['lang']) ? $_GET['lang'] : self::$RussianLang;
         $this->parseConfig($_SERVER['DOCUMENT_ROOT'] . Config::$APP_DIR);
         if (null != $context) {
             $this->parseConfig($context);
@@ -81,8 +75,8 @@ class Messages {
      * @param string $key
      * @return label 
      */
-    public function lbl($key) {
-        return $this->msg('label', $key);
+    public function lbl($key, $params = null) {
+        return $this->msg('label', $key, $params);
     }
 
     /**
@@ -91,12 +85,18 @@ class Messages {
      * @param string $key
      * @return string
      */
-    public function msg($section='message', $key=null) {
+    public function msg($section = 'message', $key = null, $params = null) {
         $result = "";
         $lang = $this->currentLang;
-        Debug::printMessage("Return message by key '$key' for language $lang from '$section'. Result message: $result;");
         if (null != $key) {
             $result = $this->messages[$section][$key][$lang];
+        }
+        Debug::printMessage("Return message by key '$key' for language '$lang' from '$section'. Result message: $result;");
+        if (null != $params && is_array($params)) {
+            foreach ($params as $key => $value) {
+                $result = str_replace('::' . $key . '::', $value, $result);
+            }
+            Debug::printMessage("Filter message '$result' with '" . $params . "'");
         }
         return $result;
     }

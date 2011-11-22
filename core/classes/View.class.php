@@ -49,6 +49,7 @@ class View {
     }
 
     function fetch($params='') {
+        global $TT, $LANG;
         if (is_array($params)) {
             $this->params = array_merge($this->params, $params);
         }

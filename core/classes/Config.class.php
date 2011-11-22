@@ -5,10 +5,12 @@
  * @author nevil
  */
 class Config {
-    public static $APP_DIR = '/core/';
-    public static $APP_RESOURCE_DIR = '/core/resources/';
-    public static $APP_CSS_DIR = '/core/resources/css';
-    public static $APP_JS_DIR = '/core/resources/js';
+    public static $APP_DIR = '/app/';
+    public static $CORE_DIR = '/core/';
+    public static $APP_RESOURCE_DIR = '/app/resources/';
+    public static $APP_ADMIN_RESOURCE_DIR = '/app/admin/resources/';
+    public static $APP_CSS_DIR = '/app/resources/css';
+    public static $APP_JS_DIR = '/app/resources/js';
     public static $MANAGED_RESOURCE_DIR_PREFIX = 'resources/managed/';
     public static $CSS_DIR_PREFIX = 'resources/css/';
     public static $JS_DIR_PREFIX = 'resources/js/';
